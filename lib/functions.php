@@ -1,4 +1,5 @@
 <?php
+if(!function_exists('wp_notify_moderator')){
     function wp_notify_moderator($comment_id) {
             global $wpdb;
 
@@ -30,7 +31,7 @@
                      <span itemprop="action" itemscope itemtype="http://schema.org/ConfirmAction">
                         <meta itemprop="name" content="Approve"/>
                           <span itemprop="handler" itemscope itemtype="http://schema.org/HttpActionHandler">
-                              <link itemprop="url" href="http://codechutney.com/admin-ajax.php/?action=approve_comment&id=FDFD5FG"/>
+                              <link itemprop="url" href="'.site_url('admin-ajax.php').'/?action=approve_comment&id=FDFD5FG"/>
                           </span>
                     </span>
                   </span>
@@ -85,17 +86,9 @@
                     $sent[] = wp_mail( $email, $subject, $notify_message, $message_headers );
             }
             remove_filter( 'wp_mail_content_type', 'set_html_content_type' );
-            echo "<pre>";
-            print_r($message_headers);
-            echo "</pre>";
-            echo "<pre>";
-            print_r($subject);
-            echo "</pre>";
-            echo "<pre>";
-            print_r($notify_message);
-            echo "</pre>";exit;
             return true;
     }
+}
 function set_html_content_type(){
     return 'text/html';
 }

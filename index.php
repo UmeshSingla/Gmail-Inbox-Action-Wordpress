@@ -20,9 +20,11 @@ foreach( glob ( dirname(__FILE__). "/lib/*.php" ) as $lib_filename ) {
 }
 class GmailInboxAction {
     public function __construct() {
-//        add_filter('comment_moderation_text', array( $this, 'gia_modify_comment_text'), '', 2 );
-//        add_action('comment_post', array( $this, 'verify_working') );
+        add_action('wp_ajax_nopriv_gia_approve_comment', array($this, 'gia_approve_comment') );
     }
     
+    public function gia_approve_comment(){
+        if(isset($_SERVER['HTTP_USER_AGENT']) && (strpos($_SERVER['HTTP_USER_AGENT'],'Gmail Actions') !== false) && (strpos($_SERVER['HTTP_USER_AGENT'],'gecko') !== false) ) { return '200 (OK)' ; }
+    }
 }
 add_action('init', function() { new GmailInboxAction(); } );
