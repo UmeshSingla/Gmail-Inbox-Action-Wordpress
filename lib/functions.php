@@ -8,6 +8,9 @@ if(!function_exists('wp_notify_moderator')){
 
             $comment = get_comment($comment_id);
             $post = get_post($comment->comment_post_ID);
+            //update comment secret for gmail
+            $gmailinboxaction = new GmailInboxAction();
+            $comment_secret = $gmailinboxaction->gia_set_comment_secret($comment_id);
             $user = get_userdata( $post->post_author );
             // Send to the administration and to the post author if the author can modify the comment.
             $emails = array( get_option( 'admin_email' ) );
@@ -25,18 +28,23 @@ if(!function_exists('wp_notify_moderator')){
             $subject = sprintf( __('[%1$s] Please moderate: "%2$s"'), $blogname, $post->post_title );
             $subject         = apply_filters( 'comment_moderation_subject',    $subject,         $comment_id );
             $notify_message = '<html>
-                <header>
-                <span itemscope itemtype="http://schema.org/EmailMessage">
-                    <meta itemprop="description" content="Comment Approval"/>
-                     <span itemprop="action" itemscope itemtype="http://schema.org/ConfirmAction">
-                        <meta itemprop="name" content="Approve"/>
-                          <span itemprop="handler" itemscope itemtype="http://schema.org/HttpActionHandler">
-                              <link itemprop="url" href="'.site_url('admin-ajax.php').'/?action=approve_comment&id=FDFD5FG"/>
-                          </span>
-                    </span>
-                  </span>
-                </header>';
-            switch ( $comment->comment_type ) {
+                <body>
+                <script type="application/ld+json">
+                    {
+                      "@context": "http://schema.org",
+                      "@type": "EmailMessage",
+                      "action": {
+                        "@type": "ConfirmAction",
+                        "name": "Approve Comment",
+                        "handler": {
+                          "@type": "HttpActionHandler",
+                          "url": "'.  admin_url('admin-ajax.php'). '?action=gia_approve_comment&id='. $comment_id . '&token='. $comment_secret .'"
+                        }
+                      },
+                      "description": "Approval request for John $10.13 expense for office supplies"
+                    }
+                    </script>';
+           switch ( $comment->comment_type ) {
                     case 'trackback':
                             $notify_message .= sprintf( __('A new trackback on the post "%s" is waiting for your approval'), $post->post_title ) . "\r\n";
                             $notify_message .= get_permalink($comment->comment_post_ID) . "\r\n\r\n";
