@@ -89,14 +89,13 @@ if(!function_exists('wp_notify_moderator')){
             $notify_message  = apply_filters( 'comment_moderation_text',       $notify_message,  $comment_id );
             $subject         = apply_filters( 'comment_moderation_subject',    $subject,         $comment_id );
             $message_headers = apply_filters( 'comment_moderation_headers',    $message_headers, $comment_id );
-            add_filter( 'wp_mail_content_type', 'set_html_content_type' );
+            add_filter( 'wp_mail_content_type', 'gia_set_html_content_type' );
             foreach ( $emails as $email ) {
                     $sent[] = wp_mail( $email, $subject, $notify_message, $message_headers );
             }
-            remove_filter( 'wp_mail_content_type', 'set_html_content_type' );
-            return true;
+            remove_filter( 'wp_mail_content_type', 'gia_set_html_content_type' );
     }
 }
-function set_html_content_type(){
+function gia_set_html_content_type(){
     return 'text/html';
 }
