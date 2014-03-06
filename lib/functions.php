@@ -8,6 +8,7 @@ if( !function_exists('wp_notify_moderator') )   {
 
         $comment    =   get_comment($comment_id);
         $post   =   get_post($comment->comment_post_ID);
+        $post_title = get_the_title($comment->comment_post_ID);
         //update comment secret for gmail
         $gmailinboxaction   =   new GmailInboxAction();
         $comment_secret =   $gmailinboxaction->gia_set_comment_secret($comment_id);
@@ -32,16 +33,17 @@ if( !function_exists('wp_notify_moderator') )   {
             <script type="application/ld+json">
                 {
                     "@context": "http://schema.org",
-                    "@type": "EmailMessage",
+                    "@type": "Comment",
                     "action": {
                         "@type": "ConfirmAction",
                         "name": "Approve Comment",
                         "handler": {
                             "@type": "HttpActionHandler",
-                            "url": "'.  admin_url('admin-ajax.php'). '?action=gia_approve_comment&id='. $comment_id . '&token='. $comment_secret .'"
+                            "url": "'.  admin_url('admin-ajax.php'). '?action=gia_approve_comment&id='. $comment_id . '&token='. $comment_secret .'",
+                            "method": "POST"
                         }
                     },
-                    "description": "Approval request for John $10.13 expense for office supplies"
+                    "description": "Approval request for comment, posted at '   .   $post_title   .   '"
                 }
             </script>';
         switch  (   $comment->comment_type  )   {
