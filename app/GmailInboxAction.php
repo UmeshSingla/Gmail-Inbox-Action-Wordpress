@@ -28,10 +28,10 @@ class GmailInboxAction {
         if( !$comment_id || !$comment_secret) { return; }
         return update_comment_meta($comment_id, 'comment_secret', $comment_secret);
     }
-    //varify comment secret
+    //verify comment secret
     public function gia_verify_comment_secret($comment_id, $comment_secret){
         if( !$comment_id || !$comment_secret ) { return; }
-        $actual_comment_secret = get_comment_meta($comment_id, 'comment_secret', TRUE);
+        $actual_comment_secret = get_comment_meta($comment_id, 'comment_secret', true);
         if($actual_comment_secret === $comment_secret){
             return 'verified';
         }
