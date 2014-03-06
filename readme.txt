@@ -1,4 +1,4 @@
-=== One Click Comment Approve for Gmail ===
+=== One Click Comment Approval for Gmail ===
 Contributors: UmeshSingla
 Donate link: http://github.com/UmeshSingla
 Tags: comment moderation, gmail actions
