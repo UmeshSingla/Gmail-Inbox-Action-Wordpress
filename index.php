@@ -25,4 +25,4 @@ function    gia_initate_class() {
     global $gmailinboxaction;
     $gmailinboxaction = new GmailInboxAction();
 }
-add_action('init', 'gia_initate_class' );
+add_action( 'init',  'gia_initate_class'  );
