@@ -51,21 +51,21 @@ class   GmailInboxAction {
 		}
 		$actual_comment_secret = get_comment_meta( $comment_id, 'comment_secret', true );
 		if ( $actual_comment_secret === $comment_secret ) {
-			return 'verified';
+			return true;
 		}
 	}
 
 	public function gia_approve_comment() {
 		if ( empty( $_REQUEST[ 'id' ] ) || empty( $_REQUEST[ 'token' ] ) ) {
-			echo '401 (Unauthorized)';
+			header('HTTP/1.1 401 Unauthorized', true, 401);
 			die;
 		}
 		//uncomment when implementing
-		//        if(   !isset($_SERVER['HTTP_USER_AGENT']) ||  (strpos($_SERVER['HTTP_USER_AGENT'],    'Gmail Actions')    ==  false) || (strpos($_SERVER['HTTP_USER_AGENT'],'gecko') == false)    )   {   echo    '401 (Unauthorized)';   die;}
+		//        if(   !isset($_SERVER['HTTP_USER_AGENT']) ||  (strpos($_SERVER['HTTP_USER_AGENT'],    'Gmail Actions')    ==  false) || (strpos($_SERVER['HTTP_USER_AGENT'],'gecko') == false)    )   {   header('HTTP/1.1 401 Unauthorized', true, 401);   die;}
 		//verify token
 		$verified = $this->gia_verify_comment_secret( $_REQUEST[ 'id' ], $_REQUEST[ 'token' ] );
-		if ( ! $verified || $verified != 'verified' ) {
-			echo '401 (Unauthorized)';
+		if ( ! $verified ) {
+			header('HTTP/1.1 401 Unauthorized', true, 401);
 			die;
 		}
 		//approve comment
@@ -74,11 +74,11 @@ class   GmailInboxAction {
 			ob_get_clean();
 		}
 		if ( ! $updated ) {
-			echo '400 (Bad Request)';
+			header('HTTP/1.1 400 Bad Request', true, 400);
 			die;
 		}
 		//if approved
-		echo '200 (OK)';
+		header('HTTP/1.1 200 OK', true, 200);
 		die( 1 );
 	}
         public function gia_modify_notification_text($notify_message, $comment_id){
