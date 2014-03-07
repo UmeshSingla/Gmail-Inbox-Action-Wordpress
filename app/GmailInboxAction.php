@@ -1,17 +1,32 @@
 <?php
 
 //Gmail Inbox Action class to handle ajax request
+/**
+ * Class GmailInboxAction
+ */
 class   GmailInboxAction {
-        var $secret;
+	/**
+	 * @var string
+	 */
+	var $secret;
+
+	/**
+	 *
+	 */
 	public function    __construct() {
-                $this->secret = '';
+		$this->secret = '';
 		add_action( 'wp_ajax_nopriv_gia_approve_comment', array( $this, 'gia_approve_comment' ) );
 		add_action( 'wp_ajax_gia_approve_comment', array( $this, 'gia_approve_comment' ) );
-                add_action('comment_post', array($this, 'gia_filter_mail_content_type') );
-                add_filter('comment_moderation_text', array($this, 'gia_modify_notification_text'), '', 2);
+		add_action( 'comment_post', array( $this, 'gia_filter_mail_content_type' ) );
+		add_filter( 'comment_moderation_text', array( $this, 'gia_modify_notification_text' ), '', 2 );
 	}
 
 	//Generates and updates comment secret
+	/**
+	 * @param $comment_id
+	 *
+	 * @return string
+	 */
 	public function gia_set_comment_secret( $comment_id ) {
 		//if empty comment id
 		if ( ! $comment_id ) {
@@ -27,6 +42,11 @@ class   GmailInboxAction {
 		return $comment_secret;
 	}
 
+	/**
+	 * @param $comment_id
+	 *
+	 * @return string
+	 */
 	public function gia_generate_comment_secret( $comment_id ) {
 		$static_num   = 8;
 		$rand         = rand( 1111, getrandmax() );
@@ -36,6 +56,12 @@ class   GmailInboxAction {
 		return sha1( $str );
 	}
 
+	/**
+	 * @param $comment_id
+	 * @param $comment_secret
+	 *
+	 * @return mixed
+	 */
 	public function    gia_update_comment_secret( $comment_id, $comment_secret ) {
 		if ( ! $comment_id || ! $comment_secret ) {
 			return;
@@ -45,6 +71,12 @@ class   GmailInboxAction {
 	}
 
 	//verify comment secret
+	/**
+	 * @param $comment_id
+	 * @param $comment_secret
+	 *
+	 * @return bool
+	 */
 	public function    gia_verify_comment_secret( $comment_id, $comment_secret ) {
 		if ( ! $comment_id || ! $comment_secret ) {
 			return;
@@ -55,9 +87,12 @@ class   GmailInboxAction {
 		}
 	}
 
+	/**
+	 *
+	 */
 	public function gia_approve_comment() {
 		if ( empty( $_REQUEST[ 'id' ] ) || empty( $_REQUEST[ 'token' ] ) ) {
-			header('HTTP/1.1 401 Unauthorized', true, 401);
+			header( 'HTTP/1.1 401 Unauthorized', true, 401 );
 			die;
 		}
 		//uncomment when implementing
@@ -65,7 +100,7 @@ class   GmailInboxAction {
 		//verify token
 		$verified = $this->gia_verify_comment_secret( $_REQUEST[ 'id' ], $_REQUEST[ 'token' ] );
 		if ( ! $verified ) {
-			header('HTTP/1.1 401 Unauthorized', true, 401);
+			header( 'HTTP/1.1 401 Unauthorized', true, 401 );
 			die;
 		}
 		//approve comment
@@ -74,15 +109,22 @@ class   GmailInboxAction {
 			ob_get_clean();
 		}
 		if ( ! $updated ) {
-			header('HTTP/1.1 400 Bad Request', true, 400);
+			header( 'HTTP/1.1 400 Bad Request', true, 400 );
 			die;
 		}
 		//if approved
-		header('HTTP/1.1 200 OK', true, 200);
+		header( 'HTTP/1.1 200 OK', true, 200 );
 		die( 1 );
 	}
-        public function gia_modify_notification_text($notify_message, $comment_id){
-            $message = '<html>
+
+	/**
+	 * @param $notify_message
+	 * @param $comment_id
+	 *
+	 * @return string
+	 */
+	public function gia_modify_notification_text( $notify_message, $comment_id ) {
+		$message = '<html>
             <body>
             <script type="application/ld+json">
                 {
@@ -100,17 +142,26 @@ class   GmailInboxAction {
                     "description": "Approval request for comment"
                 }
             </script>';
-            $message .= $notify_message;
-            $message .= '</body>
+		$message .= $notify_message;
+		$message .= '</body>
                 </html>';
-            return $message;
-        }
-        function gia_filter_mail_content_type($comment_id){
-            //update comment secret for gmail
-            $this->secret   = $this->gia_set_comment_secret( $comment_id );
-            add_filter( 'wp_mail_content_type', array($this, 'gia_set_html_content_type' ) );
-        }
-        function    gia_set_html_content_type() {
-            return 'text/html';
-        }
+
+		return $message;
+	}
+
+	/**
+	 * @param $comment_id
+	 */
+	function gia_filter_mail_content_type( $comment_id ) {
+		//update comment secret for gmail
+		$this->secret = $this->gia_set_comment_secret( $comment_id );
+		add_filter( 'wp_mail_content_type', array( $this, 'gia_set_html_content_type' ) );
+	}
+
+	/**
+	 * @return string
+	 */
+	function    gia_set_html_content_type() {
+		return 'text/html';
+	}
 }
