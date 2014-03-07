@@ -15,9 +15,9 @@ define( 'WP_GIA_PLUGIN_FOLDER', dirname( __FILE__ ) );
 define( 'WP_GIA_CSS', WP_GIA_URL . '/assets/css/' );
 define( 'WP_GIA_JS', WP_GIA_URL . '/assets/js/' );
 // Includes PHP files located in 'lib' folder
-foreach ( glob( dirname( __FILE__ ) . '/lib/*.php' ) as $lib_filename ) {
-	require_once( $lib_filename );
-}
+//foreach ( glob( dirname( __FILE__ ) . '/lib/*.php' ) as $lib_filename ) {
+//	require_once( $lib_filename );
+//}
 foreach ( glob( dirname( __FILE__ ) . '/app/*.php' ) as $lib_filename ) {
 	require_once( $lib_filename );
 }

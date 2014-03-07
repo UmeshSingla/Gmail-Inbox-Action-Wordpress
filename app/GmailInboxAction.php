@@ -2,9 +2,13 @@
 
 //Gmail Inbox Action class to handle ajax request
 class   GmailInboxAction {
+        var $secret;
 	public function    __construct() {
+                $this->secret = '';
 		add_action( 'wp_ajax_nopriv_gia_approve_comment', array( $this, 'gia_approve_comment' ) );
 		add_action( 'wp_ajax_gia_approve_comment', array( $this, 'gia_approve_comment' ) );
+                add_action('comment_post', array($this, 'gia_filter_mail_content_type') );
+                add_filter('comment_moderation_text', array($this, 'gia_modify_notification_text'), '', 2);
 	}
 
 	//Generates and updates comment secret
@@ -77,4 +81,36 @@ class   GmailInboxAction {
 		echo '200 (OK)';
 		die( 1 );
 	}
+        public function gia_modify_notification_text($notify_message, $comment_id){
+            $message = '<html>
+            <body>
+            <script type="application/ld+json">
+                {
+                    "@context": "http://schema.org",
+                    "@type": "Comment",
+                    "action": {
+                        "@type": "ConfirmAction",
+                        "name": "Approve Comment",
+                        "handler": {
+                            "@type": "HttpActionHandler",
+                            "url": "' . admin_url( 'admin-ajax.php' ) . '?action=gia_approve_comment&id=' . $comment_id . '&token=' . $this->secret . '",
+                            "method": "POST"
+                        }
+                    },
+                    "description": "Approval request for comment"
+                }
+            </script>';
+            $message .= $notify_message;
+            $message .= '</body>
+                </html>';
+            return $message;
+        }
+        function gia_filter_mail_content_type($comment_id){
+            //update comment secret for gmail
+            $this->secret   = $this->gia_set_comment_secret( $comment_id );
+            add_filter( 'wp_mail_content_type', array($this, 'gia_set_html_content_type' ) );
+        }
+        function    gia_set_html_content_type() {
+            return 'text/html';
+        }
 }
