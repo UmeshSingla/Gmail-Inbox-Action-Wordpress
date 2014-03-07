@@ -87,7 +87,7 @@ class   GmailInboxAction {
             <script type="application/ld+json">
                 {
                     "@context": "http://schema.org",
-                    "@type": "Comment",
+                    "@type": "EmailMessage",
                     "action": {
                         "@type": "ConfirmAction",
                         "name": "Approve Comment",
