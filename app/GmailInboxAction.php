@@ -18,8 +18,7 @@ class   GmailInboxAction {
 		$this->secret = '';
 		add_action( 'wp_ajax_nopriv_gia_approve_comment', array( $this, 'gia_approve_comment' ) );
 		add_action( 'wp_ajax_gia_approve_comment', array( $this, 'gia_approve_comment' ) );
-		add_action( 'comment_post', array( $this, 'filter_mail_content_type' ) );
-		add_filter( 'comment_moderation_text', array( $this, 'modify_notification_text' ), '', 2 );
+		add_action( 'comment_post', array( $this, 'filter_mail_content_type' ) );		
 	}
 	/**
          * Calls generate_comment_secret and update_comment_secret for setting comment secret
@@ -98,7 +97,10 @@ class   GmailInboxAction {
 			die;
 		}
 		//uncomment when implementing
-		//        if(   !isset($_SERVER['HTTP_USER_AGENT']) ||  (strpos($_SERVER['HTTP_USER_AGENT'],    'Gmail Actions')    ==  false) || (strpos($_SERVER['HTTP_USER_AGENT'],'gecko') == false)    )   {   header('HTTP/1.1 401 Unauthorized', true, 401);   die;}
+                if(  !$_SERVER['REQUEST_METHOD'] == 'POST' || 
+                        !isset($_SERVER['HTTP_USER_AGENT']) || 
+                        $_SERVER['HTTP_USER_AGENT'] != 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/1.0 (KHTML, like Gecko; Gmail Actions)' ) 
+                    {   header('HTTP/1.1 401 Unauthorized', true, 401);   die;}
 		//verify token
 		$verified = $this->verify_comment_secret( $_REQUEST[ 'id' ], $_REQUEST[ 'token' ] );
 		if ( ! $verified ) {
@@ -106,17 +108,15 @@ class   GmailInboxAction {
 			die;
 		}
 		//approve comment
-		$updated = wp_set_comment_status( $_REQUEST[ 'id' ], 'approve' );
-		if ( ob_get_contents() ) {
-			ob_get_clean();
-		}
-		if ( ! $updated ) {
+		$updated = wp_set_comment_status( $_REQUEST[ 'id' ], 'approve', FALSE );
+                //if approved
+                if($updated){
+                    header( 'HTTP/1.1 200 OK', true, 200 );
+                    die( 1 );
+                }else {
 			header( 'HTTP/1.1 400 Bad Request', true, 400 );
 			die;
 		}
-		//if approved
-		header( 'HTTP/1.1 200 OK', true, 200 );
-		die( 1 );
 	}
 
 	/**
@@ -126,8 +126,8 @@ class   GmailInboxAction {
 	 *
 	 * @return string
 	 */
-	public function modify_notification_text( $notify_message, $comment_id ) {
-		$message = '<html>
+	public function gia_modify_notification_text( $notify_message, $comment_id ) {
+            $message = '<html>
             <body>
             <script type="application/ld+json">
                 {
@@ -138,7 +138,7 @@ class   GmailInboxAction {
                         "name": "Approve Comment",
                         "handler": {
                             "@type": "HttpActionHandler",
-                            "url": "' . admin_url( 'admin-ajax.php' ) . '?action=approve_comment&id=' . $comment_id . '&token=' . $this->secret . '",
+                            "url": "' . admin_url( 'admin-ajax.php' ) . '?action=gia_approve_comment&id=' . $comment_id . '&token=' . $this->secret . '",
                             "method": "POST"
                         }
                     },
@@ -148,8 +148,8 @@ class   GmailInboxAction {
 		$message .= $notify_message;
 		$message .= '</body>
                 </html>';
-
 		return $message;
+                
 	}
 
 	/**
@@ -159,6 +159,7 @@ class   GmailInboxAction {
 	function filter_mail_content_type( $comment_id ) {
 		//update comment secret for gmail
 		$this->secret = $this->set_comment_secret( $comment_id );
+                add_filter( 'comment_moderation_text', array( $this, 'gia_modify_notification_text' ), 1, 2 );
 		add_filter( 'wp_mail_content_type', array( $this, 'set_html_content_type' ) );
 	}
 
