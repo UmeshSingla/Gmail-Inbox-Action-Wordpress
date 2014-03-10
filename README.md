@@ -1,6 +1,6 @@
 #Gmail Inbox Actions
 
-Allows to approve your wordpress comment from your Gmail inbox, without logging into your site.
+Allows to approve WordPress comment from your Gmail inbox, without logging into your site.
 ## Requirements:
 
 - Emails must be [authenticated via DKIM or SPF](https://support.google.com/mail/answer/180707?hl=en)
