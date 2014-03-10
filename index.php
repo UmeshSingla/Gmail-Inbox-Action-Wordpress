@@ -5,12 +5,12 @@
  * Author URI:    http://codechutney.com
  * Description:    Adds one click approval option for comments in Gmail
  * Version: 0.1
- * Text Domain : gia_inscub
+ * Text Domain : wp_gia
  */
 /**
  * Used for Tranlation
  */
-define( 'WP_GIA_TRANSLATION_DOMAIN', 'gia_inscub' );
+define( 'WP_GIA_TRANSLATION_DOMAIN', 'wp_gia' );
 
 foreach ( glob( dirname( __FILE__ ) . '/app/*.php' ) as $lib_filename ) {
     require_once( $lib_filename );
