@@ -1,12 +1,11 @@
 <?php
-
 /**
  * Plugin Name:    Gmail Inbox Action for Wordpress
  * Author: Umesh Kumar<umeshsingla05@gmail.com>
  * Author URI:    http://codechutney.com
  * Description:    Adds one click approval option for comments in Gmail
  * Version: 0.1
- * Text Domain : gia_inscub
+ * Text Domain : wp_gia
  */
 /**
  * Used for Tranlation

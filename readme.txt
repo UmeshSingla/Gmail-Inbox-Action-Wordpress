@@ -8,7 +8,7 @@ Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Allows you to approve your WordPress site comments from your inbox.
+Allows to approve WordPress site comments from your inbox.
 
 == Description ==
 

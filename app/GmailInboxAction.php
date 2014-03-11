@@ -1,8 +1,8 @@
 <?php
-
-//Gmail Inbox Action class to handle ajax request
 /**
  * Class GmailInboxAction
+ * 
+ * Handles the Ajax request and filters notification content to add script for Gmail Action, generates sha1 token.
  */
 class GmailInboxAction {
 
