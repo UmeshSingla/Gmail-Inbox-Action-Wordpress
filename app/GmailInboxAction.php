@@ -20,7 +20,7 @@ class GmailInboxAction {
         add_action( 'wp_ajax_nopriv_gia_approve_comment', array( $this, 'gia_approve_comment' ) );
         add_action( 'wp_ajax_gia_approve_comment', array( $this, 'gia_approve_comment' ) );
         add_action( 'comment_post', array( $this, 'filter_mail_content_type' ) );
-        add_action( 'wp_set_comment_status', array( $this, 'gia_remove_comment_secret' ), '', 2 );
+        add_action( 'wp_set_comment_status', array( $this, 'remove_comment_secret' ), '', 2 );
     }
 
     /**
@@ -187,7 +187,7 @@ class GmailInboxAction {
      * @param type $comment_id
      * @param type $comment_status
      */
-    function gia_remove_comment_secret($comment_id, $comment_status){
+    function remove_comment_secret($comment_id, $comment_status){
         if( !$comment_status || !$comment_id ){
             return;
         }
