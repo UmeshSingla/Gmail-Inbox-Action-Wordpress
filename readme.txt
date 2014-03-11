@@ -1,18 +1,18 @@
-=== One Click Comment Approval for Gmail ===
+=== Gmail Comment Approval ===
 Contributors: UmeshSingla
 Donate link: http://github.com/UmeshSingla
 Tags: comment moderation, gmail actions
-Requires at least: 3.8.1
+Requires at least: 3.5
 Tested up to: 3.8.1
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Allows to approve WordPress site comments from your inbox.
+One click comment approval for Wordpress from your Gmail account.
 
 == Description ==
 
-This plugin incorporates the Gmail action API to WordPress comment approval. You can directly
+This plugin incorporates the Gmail action API for WordPress comment approval. You can directly
 approve the comments from your Gmail inbox without logging into your site.
 
 == Installation ==
