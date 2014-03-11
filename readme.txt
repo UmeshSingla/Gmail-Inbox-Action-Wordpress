@@ -24,7 +24,7 @@ approve the comments from your Gmail inbox without logging into your site.
 4. Register your email with google: http://goo.gl/siU783
 
 **For detailed reference:**
-Visit [Gmail Comment Approval](http://codechutney.com/gmail-comment-approval-using-gmail-actions)
+Visit [Wordpress Comment Approval Using Gmail](http://codechutney.com/wordpress-comment-approval-using-gmail-actions)
 
 == Frequently Asked Questions ==
 
