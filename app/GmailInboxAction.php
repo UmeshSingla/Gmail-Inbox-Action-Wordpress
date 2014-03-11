@@ -98,7 +98,7 @@ class GmailInboxAction {
         if ( empty( $_REQUEST['id'] ) || empty( $_REQUEST['token'] ) ) {
             $this->set_headers_401();
         }
-        //uncomment when implementing
+        //Check Gmail headers
         if ( !$_SERVER['REQUEST_METHOD'] == 'POST' ||
                 !isset( $_SERVER['HTTP_USER_AGENT'] ) ||
                 $_SERVER['HTTP_USER_AGENT'] != 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/1.0 (KHTML, like Gecko; Gmail Actions)' ) {
