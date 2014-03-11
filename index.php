@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Plugin Name:    Gmail Inbox Action for Wordpress
  * Author: Umesh Kumar<umeshsingla05@gmail.com>
@@ -12,14 +13,19 @@
  */
 define( 'WP_GIA_TRANSLATION_DOMAIN', 'gia_inscub' );
 
-foreach ( glob( dirname( __FILE__ ) . '/app/*.php' ) as $lib_filename ) {
-    require_once( $lib_filename );
-}
+//Define Path constants
+define( 'WP_GIA_PATH', plugin_dir_path( __FILE__ ) );
+
+define( 'WP_GIA_APP_PATH', WP_GIA_PATH . 'app/' );
+
+require_once( WP_GIA_APP_PATH . 'GmailInboxAction.php');
+
 /**
- *Create a instance of GmailInboxAction class
+ * Create a instance of GmailInboxAction class
  */
 function gia_initate_class() {
-	global $gmailinboxaction;
-	$gmailinboxaction = new GmailInboxAction();
+    global $gmailinboxaction;
+    $gmailinboxaction = new GmailInboxAction();
 }
+
 add_action( 'init', 'gia_initate_class' );

@@ -115,7 +115,12 @@ class GmailInboxAction {
         $updated = wp_set_comment_status( $_REQUEST['id'], 'approve', FALSE );
         //if approved
         if ( $updated ) {
+            //remove token from comment meta
+            delete_comment_meta( $_REQUEST['id'], 'comment_secret' );
+
+            //set Headers for gmail
             header( 'HTTP/1.1 200 OK', true, 200 );
+
             die( 1 );
         } else {
             header( 'HTTP/1.1 400 Bad Request', true, 400 );
