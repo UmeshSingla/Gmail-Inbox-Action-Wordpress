@@ -20,6 +20,7 @@ class GmailInboxAction {
         add_action( 'wp_ajax_nopriv_gia_approve_comment', array( $this, 'gia_approve_comment' ) );
         add_action( 'wp_ajax_gia_approve_comment', array( $this, 'gia_approve_comment' ) );
         add_action( 'comment_post', array( $this, 'filter_mail_content_type' ) );
+        add_action( 'wp_set_comment_status', array( $this, 'gia_remove_comment_secret' ), '', 2 );
     }
 
     /**
@@ -95,29 +96,32 @@ class GmailInboxAction {
      */
     public function gia_approve_comment() {
         if ( empty( $_REQUEST['id'] ) || empty( $_REQUEST['token'] ) ) {
-            header( 'HTTP/1.1 401 Unauthorized', true, 401 );
-            die;
+            $this->set_headers_401();
         }
         //uncomment when implementing
         if ( !$_SERVER['REQUEST_METHOD'] == 'POST' ||
                 !isset( $_SERVER['HTTP_USER_AGENT'] ) ||
                 $_SERVER['HTTP_USER_AGENT'] != 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/1.0 (KHTML, like Gecko; Gmail Actions)' ) {
-            header( 'HTTP/1.1 401 Unauthorized', true, 401 );
-            die;
+            $this->set_headers_401();
         }
+
+        //Check if comment is already approved
+        $comment = get_comment( $_REQUEST['id'] );
+
+        //if no object => invalid ID, or comment status changed
+        if ( !$comment || $comment->comment_approved != '0' ) {
+            $this->set_headers_401();
+        }
+
         //verify token
         $verified = $this->verify_comment_secret( $_REQUEST['id'], $_REQUEST['token'] );
         if ( !$verified ) {
-            header( 'HTTP/1.1 401 Unauthorized', true, 401 );
-            die;
+            $this->set_headers_401();
         }
         //approve comment
         $updated = wp_set_comment_status( $_REQUEST['id'], 'approve', FALSE );
         //if approved
         if ( $updated ) {
-            //remove token from comment meta
-            delete_comment_meta( $_REQUEST['id'], 'comment_secret' );
-
             //set Headers for gmail
             header( 'HTTP/1.1 200 OK', true, 200 );
 
@@ -178,5 +182,22 @@ class GmailInboxAction {
     function set_html_content_type() {
         return 'text/html';
     }
-
+    /**
+     * Delete comment secret from meta if comment status is changed
+     * @param type $comment_id
+     * @param type $comment_status
+     */
+    function gia_remove_comment_secret($comment_id, $comment_status){
+        if( !$comment_status || !$comment_id ){
+            return;
+        }
+        delete_comment_meta($comment_id, 'comment_secret');
+    }
+    /**
+     * Set headers for Gmail
+     */
+    function set_headers_401(){
+        header( 'HTTP/1.1 401 Unauthorized', true, 401 );
+        exit;
+    }
 }
