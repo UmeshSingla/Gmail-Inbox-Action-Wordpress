@@ -24,7 +24,7 @@ approve the comments from your Gmail inbox without logging into your site.
 4. Register your email with google: http://goo.gl/siU783
 
 **For detailed reference:**
-Visit [Gmail Comment Approval ] (http://codechutney.com/gmail-comment-approval-using-gmail-actions)
+Visit [Gmail Comment Approval](http://codechutney.com/gmail-comment-approval-using-gmail-actions)
 
 == Frequently Asked Questions ==
 
@@ -43,7 +43,7 @@ Register the email from which your server sends the email, to make sure the acti
 button is displayed
 
 == Other Notes ==
-Refer the following link to know more about registration : [Gmail Actions Registration](http://goo.gl/K9ArOP)
+Refer the following link to know more about registration : [Registering email](http://goo.gl/K9ArOP)
 
 == Screenshots ==
 
