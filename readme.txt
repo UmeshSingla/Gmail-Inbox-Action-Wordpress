@@ -23,12 +23,15 @@ approve the comments from your Gmail inbox without logging into your site.
 3. For proper working you need to make sure that your emails are DKIM signed
 4. Register your email with google: http://goo.gl/siU783
 
+**For detailed reference:**
+Visit [Gmail Comment Approval ] (http://codechutney.com/gmail-comment-approval-using-gmail-actions)
+
 == Frequently Asked Questions ==
 
 = What is DKIM signed emails? =
 
 DKIM signatures are used to avoid spamming of mails, you can install it on
-your server using this tutorial http://goo.gl/pKwTfl.
+your server using this tutorial [Setup DKIM](http://goo.gl/pKwTfl).
 
 = Why I need to register with google? =
 
@@ -40,7 +43,7 @@ Register the email from which your server sends the email, to make sure the acti
 button is displayed
 
 == Other Notes ==
-Refer the following link to know more about registration : http://goo.gl/K9ArOP
+Refer the following link to know more about registration : [Gmail Actions Registration](http://goo.gl/K9ArOP)
 
 == Screenshots ==
 
